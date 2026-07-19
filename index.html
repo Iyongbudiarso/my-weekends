@@ -690,10 +690,10 @@
 
         <div class="counter-stat">
           <div class="stat-bar-row">
-            <div class="stat-track"><div class="stat-fill" id="mile2Fill"></div></div>
-            <span class="stat-bar-num" id="mile2Num">0</span>
+            <div class="stat-track"><div class="stat-fill" id="bdayFill"></div></div>
+            <span class="stat-bar-num" id="bdayNum">0</span>
           </div>
-          <div class="stat-label" id="mile2Label">—</div>
+          <div class="stat-label" id="bdayLabel">—</div>
         </div>
       </div>
     </div>
@@ -735,7 +735,7 @@ const grid=$('#grid'), labels=$('#gridLabels');
 const cNum=$('#counterNum'), bar=$('#barFill'), pL=$('#pctL'), pR=$('#pctR');
 const info=$('#ageInfo');
 const mile1Fill=$('#mile1Fill'), mile1Num=$('#mile1Num'), mile1Label=$('#mile1Label');
-const mile2Fill=$('#mile2Fill'), mile2Num=$('#mile2Num'), mile2Label=$('#mile2Label');
+const bdayFill=$('#bdayFill'), bdayNum=$('#bdayNum'), bdayLabel=$('#bdayLabel');
 const settingsBtn=$('#settingsBtn');
 
 function fmt(d){
@@ -855,17 +855,24 @@ function build(){
     return{weeks,pct};
   }
   const nextMile=Math.ceil(curAgeY/5)*5;
-  const nextNextMile=nextMile+5;
-
   const m1=calcMile(nextMile);
   mile1Fill.style.width=m1.pct+'%';
   mile1Num.textContent=m1.weeks;
   mile1Label.textContent='menuju '+nextMile;
 
-  const m2=calcMile(nextNextMile);
-  mile2Fill.style.width=m2.pct+'%';
-  mile2Num.textContent=m2.weeks;
-  mile2Label.textContent='menuju '+nextNextMile;
+  // ── Birthday ──
+  const nextBday=new Date(BD);
+  nextBday.setFullYear(now2.getFullYear());
+  if(nextBday<now2) nextBday.setFullYear(now2.getFullYear()+1);
+  const bdayWeeks=Math.max(0,Math.floor((nextBday-now2)/6048e5));
+  const lastBday=new Date(nextBday);
+  lastBday.setFullYear(nextBday.getFullYear()-1);
+  const bdayTotal=(nextBday-lastBday)/6048e5;
+  const bdayElapsed=Math.max(0,(now2-lastBday)/6048e5);
+  const bdayPct=Math.min(100,(bdayElapsed/bdayTotal)*100);
+  bdayFill.style.width=bdayPct+'%';
+  bdayNum.textContent=bdayWeeks;
+  bdayLabel.textContent='ultah ke-'+ (nextBday.getFullYear()-birthY)}
 
   // Cascade past-cell animation
   animPast(pastCells);
