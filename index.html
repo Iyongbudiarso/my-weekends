@@ -272,8 +272,8 @@
      ═══════════════════════════════════════════════════════ */
   .counter{
     text-align:center;
-    margin-bottom:var(--space-8);
-    animation:fadeUp var(--motion-normal) .3s both;
+    margin-bottom:var(--space-6);
+    animation:fadeUp var(--motion-normal) .2s both;
   }
   .counter-num{
     font-size:var(--font-size-hero);
@@ -318,6 +318,7 @@
      ═══════════════════════════════════════════════════════ */
   .grid-section{
     animation:fadeUp var(--motion-normal) .5s both;
+    margin-bottom:var(--space-8);
   }
   .grid-scroll{
     border-radius:var(--radius-sm);
@@ -417,11 +418,11 @@
      ═══════════════════════════════════════════════════════ */
   .legend{
     display:flex;justify-content:center;gap:var(--space-7);
-    margin-top:var(--space-6);
+    margin-bottom:var(--space-6);
     flex-wrap:wrap;
     font-size:var(--font-size-sm);
     color:var(--text-tertiary);
-    animation:fadeUp var(--motion-normal) .6s both;
+    animation:fadeUp var(--motion-normal) .3s both;
   }
   .legend-item{display:flex;align-items:center;gap:var(--space-1)}
   .dot{
@@ -443,8 +444,8 @@
      ═══════════════════════════════════════════════════════ */
   .footer{
     text-align:center;
-    padding-top:var(--space-7);
-    animation:fadeUp var(--motion-normal) .7s both;
+    margin-bottom:var(--space-7);
+    animation:fadeUp var(--motion-normal) .4s both;
   }
   .footer-quote{
     font-size:var(--font-size-sm);
@@ -571,19 +572,11 @@
       </div>
     </div>
 
-    <!-- Grid -->
-    <div class="grid-section">
-      <div class="grid-scroll">
-        <div class="grid-outer">
-          <div class="grid-labels" id="gridLabels"></div>
-          <div class="grid" id="grid"></div>
-        </div>
-      </div>
-      <div class="legend">
-        <div class="legend-item"><span class="dot past"></span>Terlewati</div>
-        <div class="legend-item"><span class="dot now"></span>Sekarang</div>
-        <div class="legend-item"><span class="dot future"></span>Tersisa</div>
-      </div>
+    <!-- Legend -->
+    <div class="legend">
+      <div class="legend-item"><span class="dot past"></span>Terlewati</div>
+      <div class="legend-item"><span class="dot now"></span>Sekarang</div>
+      <div class="legend-item"><span class="dot future"></span>Tersisa</div>
     </div>
 
     <!-- Footer -->
@@ -592,6 +585,15 @@
       <button class="settings-btn" id="settingsBtn">⚙️ Pengaturan</button>
       <p class="config-info" id="configInfo"></p>
     </div>
+
+    <!-- Grid (paling bawah) -->
+    <div class="grid-section">
+      <div class="grid-scroll">
+        <div class="grid-outer">
+          <div class="grid-labels" id="gridLabels"></div>
+          <div class="grid" id="grid"></div>
+        </div>
+      </div>
 
   </div>
 </div>
