@@ -378,8 +378,8 @@ function build(){
 function showModal(editing){
   editMode=!!editing;
   const s=JSON.parse(localStorage.getItem('lw')||'null');
-  if(editing&&s){bInput.value=s.birth;aInput.value=s.age}
-  else if(!editing&&!s){const def=new Date();def.setFullYear(def.getFullYear()-30);bInput.value=def.toISOString().split('T')[0]}
+  if(s){bInput.value=s.birth;aInput.value=s.age}
+  else if(!editing){const def=new Date();def.setFullYear(def.getFullYear()-30);bInput.value=def.toISOString().split('T')[0]}
   startBtn.textContent=editMode?'Simpan':'Mulai';
   document.getElementById('modalHint').textContent=editMode?'Edit data yang sudah tersimpan — klik Simpan untuk memperbarui.':'Isi data kamu untuk memulai.';
   modal.classList.add('show');
@@ -410,8 +410,8 @@ function init(){
   refreshConfigInfo();
   if(saved){
     try{
-      const d=JSON.parse(saved); BD=new Date(d.b); TA=d.a;
-      if(!isNaN(BD.getTime())&&TA>0){build();return}
+      const d=JSON.parse(saved); BD=new Date(d.birth); TA=d.age;
+      if(!isNaN(BD.getTime())&&TA>0){refreshConfigInfo();build();return}
     }catch(e){}
   }
   showModal(false);
