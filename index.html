@@ -872,7 +872,7 @@ function build(){
   const bdayPct=Math.min(100,(bdayElapsed/bdayTotal)*100);
   bdayFill.style.width=bdayPct+'%';
   bdayNum.textContent=bdayWeeks;
-  bdayLabel.textContent='ultah ke-'+ (nextBday.getFullYear()-birthY)}
+  bdayLabel.textContent='ultah ke-'+ (nextBday.getFullYear()-birthY);
 
   // Cascade past-cell animation
   animPast(pastCells);
