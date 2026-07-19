@@ -17,6 +17,7 @@ Sebuah visualisasi sisa minggu hidupmu. Setiap kotak = 1 minggu. Dari lahir samp
   - Emas berdenyut = minggu ini
   - Transparan = minggu tersisa
 - **Penyimpanan lokal** — data disimpan di browser (localStorage), cukup input sekali
+- **Pengaturan** — tombol ⚙️ di footer untuk edit tanggal/target kapan saja
 - **Responsif** — desktop, tablet, HP
 
 ## 🚀 Cara Pakai
@@ -26,7 +27,7 @@ Sebuah visualisasi sisa minggu hidupmu. Setiap kotak = 1 minggu. Dari lahir samp
 3. Klik **Mulai**
 4. Scroll untuk melihat seluruh grid hidupmu
 
-> Untuk mengubah data, klik **⚙️ Ubah Pengaturan** di footer.
+> Untuk mengubah data, klik **⚙️ Pengaturan** di footer.
 
 ## 🛠️ Teknis
 
