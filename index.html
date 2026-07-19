@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Life in Weeks — Memento Mori</title>
+<title>My Weekends</title>
 <style>
   /* ═══════════════════════════════════════════════════════
      DESIGN TOKENS (from DESIGN.md)
@@ -140,12 +140,7 @@
   .modal-overlay.show .modal{
     transform:translateY(0) scale(1);
   }
-  .modal-icon{
-    font-size:var(--font-size-4xl);
-    margin-bottom:var(--space-3);
-    display:block;
-    opacity:.7;
-  }
+
   .modal h1{
     font-size:var(--font-size-3xl);
     font-weight:500;
@@ -250,7 +245,7 @@
     width:100%;
     text-align:center;
   }
-  .hero .icon{font-size:var(--font-size-3xl);margin-bottom:var(--space-1);opacity:.55}
+
   .hero h1{
     font-size:var(--font-size-4xl);
     font-weight:400;
@@ -576,12 +571,6 @@
   .settings-btn:focus-visible{
     box-shadow:var(--focus-ring);
   }
-  .config-info{
-    font-size:var(--font-size-xs);
-    color:var(--text-tertiary);
-    opacity:.35;
-    margin-top:var(--space-2);
-  }
 
   /* ═══════════════════════════════════════════════════════
      ANIMATIONS
@@ -639,7 +628,7 @@
 <!-- ── MODAL ── -->
 <div class="modal-overlay" id="modal">
   <div class="modal">
-    <span class="modal-icon">🕯️</span>
+
     <h1><span>Life</span> in Weeks</h1>
     <p class="sub">Kapan perjalananmu dimulai,<br>dan sampai kapan kamu ingin melangkah?</p>
     <label>Tanggal Lahir</label>
@@ -657,8 +646,8 @@
   <!-- Hero -->
   <div class="hero">
     <div class="hero-inner">
-      <div class="icon">🕯️</div>
-      <h1>Memento <span>Mori</span></h1>
+
+      <h1>My <span>Weekends</span></h1>
       <p class="info" id="ageInfo">—</p>
     </div>
   </div>
@@ -682,18 +671,18 @@
 
         <div class="counter-stat">
           <div class="stat-bar-row">
-            <div class="stat-track"><div class="stat-fill" id="mile1Fill"></div></div>
-            <span class="stat-bar-num" id="mile1Num">0</span>
-          </div>
-          <div class="stat-label" id="mile1Label">—</div>
-        </div>
-
-        <div class="counter-stat">
-          <div class="stat-bar-row">
             <div class="stat-track"><div class="stat-fill" id="bdayFill"></div></div>
             <span class="stat-bar-num" id="bdayNum">0</span>
           </div>
           <div class="stat-label" id="bdayLabel">—</div>
+        </div>
+
+        <div class="counter-stat">
+          <div class="stat-bar-row">
+            <div class="stat-track"><div class="stat-fill" id="mile1Fill"></div></div>
+            <span class="stat-bar-num" id="mile1Num">0</span>
+          </div>
+          <div class="stat-label" id="mile1Label">—</div>
         </div>
       </div>
     </div>
@@ -708,8 +697,8 @@
     <!-- Footer -->
     <div class="footer">
 
-      <button class="settings-btn" id="settingsBtn">⚙️ Pengaturan</button>
-      <p class="config-info" id="configInfo"></p>
+      <button class="settings-btn" id="settingsBtn">Pengaturan</button>
+
     </div>
 
     <!-- Grid (paling bawah) -->
@@ -848,7 +837,7 @@ function build(){
   function calcMile(mileAge){
     const d=new Date(BD); d.setFullYear(birthY+mileAge);
     const weeks=Math.max(0,Math.floor((d-now2)/6048e5));
-    const prev=d; prev.setFullYear(birthY+mileAge-5);
+    const prev=new Date(d); prev.setFullYear(birthY+mileAge-5);
     const total=(d-prev)/6048e5;
     const elapsed=Math.max(0,(now2-prev)/6048e5);
     const pct=Math.min(100,(elapsed/total)*100);
@@ -899,8 +888,6 @@ startBtn.addEventListener('click',()=>{
   if(isNaN(BD.getTime())) return;
   localStorage.setItem('lw',JSON.stringify({birth:b,age:a}));
   modal.classList.remove('show'); build();
-  const ci=document.getElementById('configInfo');
-  if(ci) ci.textContent='Lahir '+b+' · Target '+a+' tahun';
 });
 settingsBtn.addEventListener('click',()=>{showModal(true)});
 settingsBtn.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' ')e.preventDefault();showModal(true)});
@@ -941,8 +928,6 @@ function init(){
     try{
       const d=JSON.parse(saved); BD=new Date(d.birth); TA=d.age;
       if(!isNaN(BD.getTime())&&TA>0){
-        const ci=document.getElementById('configInfo');
-        if(ci) ci.textContent='Lahir '+d.birth+' · Target '+TA+' tahun';
         build();return
       }
     }catch(e){}
