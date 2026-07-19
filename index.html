@@ -56,13 +56,16 @@
     --cell-size:10px;
     --cell-gap:2px;
     --cell-radius:var(--radius-xs);
-    --cell-past:#e8e4f5;
-    --cell-past-border:#d4cee8;
+    --cell-past:var(--surface-base);
+    --cell-past-border:var(--surface-base);
     --cell-current-bg:var(--text-inverse);
     --cell-current-border:#a08ae8;
+    --cell-current-dot:#ffffff;
     --cell-future-bg:transparent;
-    --cell-future-border:#e0dcee;
-    --cell-before-bg:rgba(16,15,18,.03);
+    --cell-future-border:#c8c0db;
+    --cell-future-near-bg:rgba(141,111,222,.08);
+    --cell-future-near-border:var(--text-inverse);
+    --cell-before-bg:transparent;
     --cell-before-border:transparent;
     --decade-gap:8px;
     --week-end-margin:7px;
@@ -390,16 +393,38 @@
     opacity:1;
     transform:scale(1);
   }
+
+  /* ── CURRENT: you are here, this is the moment ── */
   .c.current{
     background:var(--cell-current-bg);
     border-color:var(--cell-current-border);
-    box-shadow:0 0 6px rgba(141,111,222,.28);
-    animation:pulse 3s ease-in-out infinite;
-    z-index:1;
+    box-shadow:0 0 8px rgba(141,111,222,.45);
+    animation:pulse-current 1.5s ease-in-out infinite;
+    z-index:2;
   }
+  .c.current::after{
+    content:'';
+    position:absolute;
+    inset:50%;
+    width:3px;height:3px;
+    margin:-1.5px 0 0 -1.5px;
+    border-radius:var(--radius-xl);
+    background:var(--cell-current-dot);
+    box-shadow:0 0 4px rgba(255,255,255,.6);
+  }
+
+  /* ── FUTURE: precious near, void far ── */
   .c.future{
     background:var(--cell-future-bg);
     border-color:var(--cell-future-border);
+    opacity:calc(1 - var(--future-fade, 0));
+    transition:background var(--motion-instant),border-color var(--motion-instant),
+              opacity .5s,transform .5s cubic-bezier(.34,1.56,.64,1);
+  }
+  .c.future-near{
+    background:var(--cell-future-near-bg);
+    border-color:var(--cell-future-near-border);
+    opacity:calc(1 - var(--future-fade, 0) * .5);
   }
 
   /* ── 4-week grouping (~monthly) ── */
@@ -435,7 +460,7 @@
   .dot.now{
     background:var(--cell-current-bg);
     border-color:var(--cell-current-border);
-    animation:pulse 3s infinite;
+    animation:pulse-legend 3s infinite;
   }
   .dot.future{background:transparent;border-color:var(--cell-future-border)}
 
@@ -488,7 +513,11 @@
     from{opacity:0;transform:translateY(var(--space-6))}
     to{opacity:1;transform:translateY(0)}
   }
-  @keyframes pulse{
+  @keyframes pulse-current{
+    0%,100%{box-shadow:0 0 4px rgba(141,111,222,.35)}
+    50%{box-shadow:0 0 12px rgba(141,111,222,.6),0 0 24px rgba(141,111,222,.2)}
+  }
+  @keyframes pulse-legend{
     0%,100%{box-shadow:0 0 4px rgba(141,111,222,.2)}
     50%{box-shadow:0 0 10px rgba(141,111,222,.4),0 0 20px rgba(141,111,222,.1)}
   }
@@ -628,6 +657,9 @@ function cellStatus(r,c){
   if(s>death) return 'after-death';
   if(e<now) return 'past';
   if(s<=now&&now<=e) return 'current';
+  // determine near vs far future
+  const weeksAhead=(s-now)/6048e5; // ms → weeks
+  if(weeksAhead<=78) return 'future-near'; // ~1.5 tahun
   return 'future';
 }
 
@@ -682,6 +714,14 @@ function build(){
       el.className='c '+st;
       if(c%4===3&&c<51) el.classList.add('week-end');
 
+      // future gradient: fade into the void
+      if(st==='future'||st==='future-near'){
+        const globalW=r*52+c;
+        const weeksAhead=Math.max(0,globalW-livedW);
+        const totalFuture=Math.max(1,totalW-livedW);
+        const fade=Math.min(1,Math.pow(weeksAhead/totalFuture,.7));
+        el.style.setProperty('--future-fade',fade);
+      }
 
       row.appendChild(el);
       if(st==='past') pastCells.push(el);
