@@ -571,12 +571,6 @@
   .settings-btn:focus-visible{
     box-shadow:var(--focus-ring);
   }
-  .config-info{
-    font-size:var(--font-size-xs);
-    color:var(--text-tertiary);
-    opacity:.35;
-    margin-top:var(--space-2);
-  }
 
   /* ═══════════════════════════════════════════════════════
      ANIMATIONS
@@ -704,7 +698,7 @@
     <div class="footer">
 
       <button class="settings-btn" id="settingsBtn">Pengaturan</button>
-      <p class="config-info" id="configInfo"></p>
+
     </div>
 
     <!-- Grid (paling bawah) -->
@@ -894,8 +888,6 @@ startBtn.addEventListener('click',()=>{
   if(isNaN(BD.getTime())) return;
   localStorage.setItem('lw',JSON.stringify({birth:b,age:a}));
   modal.classList.remove('show'); build();
-  const ci=document.getElementById('configInfo');
-  if(ci) ci.textContent='Lahir '+b+' · Target '+a+' tahun';
 });
 settingsBtn.addEventListener('click',()=>{showModal(true)});
 settingsBtn.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' ')e.preventDefault();showModal(true)});
@@ -936,8 +928,6 @@ function init(){
     try{
       const d=JSON.parse(saved); BD=new Date(d.birth); TA=d.age;
       if(!isNaN(BD.getTime())&&TA>0){
-        const ci=document.getElementById('configInfo');
-        if(ci) ci.textContent='Lahir '+d.birth+' · Target '+TA+' tahun';
         build();return
       }
     }catch(e){}
