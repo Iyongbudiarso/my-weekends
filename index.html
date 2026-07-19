@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Life in Weeks — Memento Mori</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;900&family=Cormorant+Garamond:ital@0;1;1;600&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+  :root{
+    --bg:#0a0a0a;
+    --bg-soft:#0e0e0e;
+    --cell-past:#2a2a2a;
+    --cell-current:#d4a373;
+    --cell-future:transparent;
+    --cell-border:#222;
+    --text:#e8e6e3;
+    --text-muted:#666;
+    --text-gold:#d4a373;
+    --cell:10px;
+    --gap:2px;
+  }
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Inter',sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::-webkit-scrollbar{width:5px;height:5px}
+  ::-webkit-scrollbar-track{background:transparent}
+  ::-webkit-scrollbar-thumb{background:#2a2a2a;border-radius:3px}
+
+  /* ── MODAL ── */
+  .modal-overlay{
+    position:fixed;inset:0;
+    background:rgba(0,0,0,.95);
+    display:flex;align-items:center;justify-content:center;
+    z-index:1000;
+    backdrop-filter:blur(10px);
+    transition:opacity .6s,visibility .6s;
+  }
+  .modal-overlay.hidden{opacity:0;visibility:hidden;pointer-events:none}
+  .modal{
+    background:#111;border:1px solid #222;
+    border-radius:16px;padding:44px 36px 32px;
+    max-width:400px;width:90%;text-align:center;
+  }
+  .modal h1{font-size:26px;font-weight:700;margin-bottom:4px}
+  .modal h1 span{color:var(--text-gold)}
+  .modal .sub{font-size:13px;color:var(--text-muted);margin-bottom:28px;line-height:1.6}
+  .modal label{
+    display:block;font-size:11px;text-transform:uppercase;
+    letter-spacing:1px;color:var(--text-muted);
+    text-align:left;margin-bottom:5px;margin-top:18px;
+  }
+  .modal label:first-of-type{margin-top:0}
+  .modal input{
+    width:100%;padding:11px 14px;
+    background:#1a1a1a;border:1px solid #2a2a2a;
+    border-radius:8px;color:var(--text);
+    font-size:15px;font-family:inherit;
+    outline:none;transition:border-color .2s;
+  }
+  .modal input:focus{border-color:var(--text-gold)}
+  .modal button{
+    margin-top:26px;width:100%;padding:13px;
+    background:var(--text-gold);color:#0a0a0a;
+    border:none;border-radius:8px;
+    font-size:15px;font-weight:700;font-family:inherit;
+    cursor:pointer;transition:transform .15s,box-shadow .2s;
+  }
+  .modal button:hover{transform:translateY(-1px);box-shadow:0 4px 20px rgba(212,163,115,.25)}
+
+  /* ── LAYOUT ── */
+  .container{max-width:880px;width:100%;padding:36px 20px 60px}
+
+  header{text-align:center;margin-bottom:32px;animation:fadeUp .8s .2s both}
+  header .icon{font-size:28px;margin-bottom:6px;opacity:.5}
+  header h1{
+    font-family:'Cormorant Garamond',serif;
+    font-size:38px;font-weight:400;font-style:italic;
+    letter-spacing:.5px;
+  }
+  header h1 span{color:var(--text-gold)}
+  header .info{font-size:13px;color:var(--text-muted);margin-top:5px}
+
+  /* ── COUNTER ── */
+  .counter{text-align:center;margin-bottom:24px;animation:fadeUp .8s .4s both}
+  .counter-num{
+    font-size:64px;font-weight:900;
+    letter-spacing:-2px;line-height:1;
+    background:linear-gradient(135deg,#d4a373,#8b5e3c);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    background-clip:text;
+  }
+  .counter-lbl{font-size:14px;color:var(--text-muted);margin-top:2px;text-transform:uppercase;letter-spacing:.5px}
+  .counter-bar{
+    display:flex;align-items:center;justify-content:center;gap:10px;
+    margin-top:14px;
+  }
+  .counter-bar .track{width:180px;height:2px;background:#1a1a1a;border-radius:2px;overflow:hidden}
+  .counter-bar .fill{height:100%;width:0;background:var(--text-gold);border-radius:2px;transition:width 2s cubic-bezier(.22,1,.36,1)}
+  .counter-bar .pct{font-size:12px;color:var(--text-muted);font-variant-numeric:tabular-nums;min-width:40px}
+
+  /* ── GRID ── */
+  .grid-section{margin-top:4px;animation:fadeUp .8s .6s both}
+  .grid-scroll{
+    border-radius:10px;
+    border:1px solid #151515;
+    background:var(--bg-soft);
+    padding:14px 16px;
+  }
+  .grid-outer{display:flex;gap:3px}
+  .grid-labels{
+    display:flex;flex-direction:column;gap:var(--gap);
+    position:sticky;left:0;z-index:2;
+    flex-shrink:0;
+  }
+  .lbl{
+    height:var(--cell);font-size:9px;color:var(--text-muted);
+    display:flex;align-items:center;justify-content:flex-end;
+    padding-right:6px;min-width:38px;
+    background:var(--bg-soft);
+    font-variant-numeric:tabular-nums;
+    flex-shrink:0;
+  }
+  .lbl.five{color:var(--text-gold);font-weight:700;font-size:10px}
+  .lbl.empty{color:transparent;font-size:7px}
+  .lbl.decade-end{margin-bottom:6px}
+
+  .grid{display:flex;flex-direction:column;gap:var(--gap);flex-shrink:0}
+  .row{display:flex;gap:var(--gap);height:var(--cell);flex-shrink:0}
+  .row.decade-end{margin-bottom:6px}
+
+  .c{
+    width:var(--cell);height:var(--cell);
+    border-radius:2px;
+    background:var(--cell-future);
+    border:1px solid var(--cell-border);
+    transition:background .35s,border-color .35s,opacity .5s,transform .5s cubic-bezier(.34,1.56,.64,1);
+    flex-shrink:0;
+    position:relative;
+  }
+  .c.before-birth{background:#0c0c0c;border-color:#141414;opacity:.25}
+  .c.past{
+    background:var(--cell-past);border-color:#3a3a3a;
+    opacity:0;transform:scale(.3);
+  }
+  .c.past.show{opacity:1;transform:scale(1)}
+  .c.current{
+    background:var(--cell-current);border-color:#e8c49a;
+    box-shadow:0 0 6px rgba(212,163,115,.35);
+    animation:pulse 3s ease-in-out infinite;
+    z-index:1;
+  }
+  .c.future{background:var(--cell-future);border-color:#1e1e1e}
+
+  /* grouping 4-minggu */
+  .c.week-end{margin-right:7px}
+  .c.week-end::after{
+    content:'';position:absolute;
+    right:-5px;top:1px;bottom:1px;
+    width:1px;background:#1e1e1e;opacity:.3;
+  }
+
+  /* ── LEGEND ── */
+  .legend{
+    display:flex;justify-content:center;gap:22px;
+    margin-top:14px;flex-wrap:wrap;
+    font-size:12px;color:var(--text-muted);
+    animation:fadeUp .8s .8s both;
+  }
+  .legend-item{display:flex;align-items:center;gap:7px}
+  .dot{width:11px;height:11px;border-radius:2px;border:1px solid #2a2a2a}
+  .dot.past{background:var(--cell-past)}
+  .dot.now{background:var(--cell-current);animation:pulse 3s infinite}
+  .dot.future{background:transparent}
+
+  /* ── FOOTER ── */
+  footer{text-align:center;margin-top:32px;animation:fadeUp .8s 1s both}
+  footer p{font-size:12px;color:var(--text-muted);opacity:.4;max-width:400px;margin:0 auto 10px}
+  .settings-btn{
+    background:none;border:1px solid #222;
+    color:var(--text-muted);padding:5px 14px;border-radius:20px;
+    font-size:11px;cursor:pointer;font-family:inherit;
+    transition:all .2s;
+  }
+  .settings-btn:hover{border-color:var(--text-gold);color:var(--text-gold)}
+
+  @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes pulse{
+    0%,100%{box-shadow:0 0 4px rgba(212,163,115,.25)}
+    50%{box-shadow:0 0 12px rgba(212,163,115,.5),0 0 24px rgba(212,163,115,.15)}
+  }
+
+  @media(max-width:700px){
+    :root{--cell:7px;--gap:1.5px}
+    header h1{font-size:26px}
+    .counter-num{font-size:44px}
+    .modal{padding:32px 24px}
+    .lbl{font-size:7px;min-width:28px;padding-right:4px}
+    .lbl.five{font-size:8px}
+  }
+  @media(max-width:480px){
+    :root{--cell:5px;--gap:1px}
+    .counter-num{font-size:34px}
+    .grid-scroll{padding:10px}
+    .container{padding:24px 12px 40px}
+    .lbl{font-size:6px;min-width:20px}
+    .lbl.five{font-size:7px}
+    .c.week-end{margin-right:5px}
+    .row.decade-end{margin-bottom:4px}
+    .lbl.decade-end{margin-bottom:4px}
+  }
+</style>
+</head>
+<body>
+
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <h1>☠️ <span>Life in Weeks</span></h1>
+    <p class="sub">Kapan perjalananmu dimulai, dan sampai kapan kamu ingin melangkah?</p>
+    <label>Tanggal Lahir</label>
+    <input type="date" id="birthInput" value="1996-01-01">
+    <label>Target Usia</label>
+    <input type="number" id="ageInput" value="75" min="1" max="120">
+    <button id="startBtn">Mulai</button>
+  </div>
+</div>
+
+<div class="container">
+  <header>
+    <div class="icon">🕯️</div>
+    <h1>Memento <span>Mori</span></h1>
+    <p class="info" id="ageInfo">—</p>
+  </header>
+
+  <div class="counter">
+    <div class="counter-num" id="counterNum">0</div>
+    <div class="counter-lbl">minggu tersisa</div>
+    <div class="counter-bar">
+      <span class="pct" id="pctL">0%</span>
+      <div class="track"><div class="fill" id="barFill"></div></div>
+      <span class="pct" id="pctR">100%</span>
+    </div>
+  </div>
+
+  <div class="grid-section">
+    <div class="grid-scroll">
+      <div class="grid-outer">
+        <div class="grid-labels" id="gridLabels"></div>
+        <div class="grid" id="grid"></div>
+      </div>
+    </div>
+    <div class="legend">
+      <div class="legend-item"><span class="dot past"></span>Terlewati</div>
+      <div class="legend-item"><span class="dot now"></span>Sekarang</div>
+      <div class="legend-item"><span class="dot future"></span>Tersisa</div>
+    </div>
+  </div>
+
+  <footer>
+    <p>"Hidup bukan tentang berapa banyak minggu yang kau miliki, tapi apa yang kau lakukan dengan minggu yang tersisa."</p>
+    <button class="settings-btn" id="settingsBtn">⚙️ Ubah Pengaturan</button>
+  </footer>
+</div>
+
+<script>
+// ── STATE ──
+let BD, TA, totalW, livedW;
+
+// ── DOM ──
+const $=s=>document.querySelector(s);
+const modal=$('#modal'), bInput=$('#birthInput'), aInput=$('#ageInput'), startBtn=$('#startBtn');
+const grid=$('#grid'), labels=$('#gridLabels');
+const cNum=$('#counterNum'), bar=$('#barFill'), pL=$('#pctL'), pR=$('#pctR');
+const info=$('#ageInfo');
+const settingsBtn=$('#settingsBtn');
+
+function fmt(d){
+  const M=['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+  return d.getDate()+' '+M[d.getMonth()]+' '+d.getFullYear();
+}
+function weekDates(r,c){
+  const yr=new Date(BD); yr.setFullYear(BD.getFullYear()+r);
+  const s=new Date(yr); s.setDate(s.getDate()+c*7);
+  const e=new Date(s); e.setDate(e.getDate()+6);
+  return{s,e};
+}
+function cellStatus(r,c){
+  const{s,e}=weekDates(r,c);
+  const death=new Date(BD); death.setFullYear(BD.getFullYear()+TA);
+  const now=new Date();
+  if(e<BD) return 'before-birth';
+  if(s>death) return 'after-death';
+  if(e<now) return 'past';
+  if(s<=now&&now<=e) return 'current';
+  return 'future';
+}
+
+// ── COUNTER ──
+function animCount(target){
+  const dur=1800,t0=performance.now();
+  (function step(t){
+    const p=Math.min((t-t0)/dur,1),e=1-Math.pow(1-p,3);
+    cNum.textContent=Math.round(target*e).toLocaleString('id-ID');
+    if(p<1) requestAnimationFrame(step);
+  })(t0);
+}
+
+// ── ANIMATE PAST CELLS ──
+function animPast(els){
+  if(!els.length) return;
+  const dur=Math.min(2200,Math.max(600,els.length*2.5));
+  els.forEach((el,i)=>{setTimeout(()=>el.classList.add('show'),(i/els.length)*dur)});
+}
+
+// ── BUILD ──
+function build(){
+  grid.innerHTML=''; labels.innerHTML='';
+
+  const now=new Date(), death=new Date(BD);
+  death.setFullYear(BD.getFullYear()+TA);
+  const daysTotal=(death-BD)/864e5, daysLived=Math.max(0,(now-BD)/864e5);
+  totalW=Math.round(daysTotal/7); livedW=Math.floor(daysLived/7);
+  const remain=Math.max(0,totalW-livedW);
+
+  const years=TA;
+  const pastCells=[];
+
+  // Labels
+  for(let r=0;r<years;r++){
+    const lbl=document.createElement('div');
+    if(r%5===0&&r>0){lbl.className='lbl five';lbl.textContent=r}
+    else{lbl.className='lbl empty'}
+    if(r%10===9&&r<years-1) lbl.classList.add('decade-end');
+    labels.appendChild(lbl);
+  }
+
+  // Grid rows
+  for(let r=0;r<years;r++){
+    const row=document.createElement('div');
+    row.className='row';
+    if(r%10===9&&r<years-1) row.classList.add('decade-end');
+
+    for(let c=0;c<52;c++){
+      const st=cellStatus(r,c);
+      const el=document.createElement('div');
+      el.className='c '+st;
+      if(c%4===3&&c<51) el.classList.add('week-end');
+      row.appendChild(el);
+      if(st==='past') pastCells.push(el);
+    }
+    grid.appendChild(row);
+  }
+
+  // Counter & bar
+  animCount(remain);
+  const pct=totalW>0?(livedW/totalW)*100:0;
+  setTimeout(()=>{bar.style.width=Math.min(pct,100)+'%';pL.textContent=Math.round(pct)+'%';pR.textContent=Math.round(100-pct)+'%'},200);
+
+  const yrs=Math.floor(daysLived/365.25);
+  info.textContent='Usia '+yrs+' tahun · Target '+TA+' tahun · Lahir '+fmt(BD);
+
+  // Cascade animation
+  animPast(pastCells);
+}
+
+// ── INIT ──
+function init(){
+  const saved=localStorage.getItem('lw');
+  if(saved){
+    try{
+      const d=JSON.parse(saved); BD=new Date(d.b); TA=d.a;
+      if(!isNaN(BD.getTime())&&TA>0){modal.classList.add('hidden');build();return}
+    }catch(e){}
+  }
+  const def=new Date(); def.setFullYear(def.getFullYear()-30);
+  bInput.value=def.toISOString().split('T')[0];
+  modal.classList.remove('hidden');
+}
+
+startBtn.addEventListener('click',()=>{
+  const b=bInput.value,a=parseInt(aInput.value);
+  if(!b||!a||a<1) return;
+  BD=new Date(b+'T00:00:00'); TA=a;
+  if(isNaN(BD.getTime())) return;
+  localStorage.setItem('lw',JSON.stringify({birth:b,age:a}));
+  modal.classList.add('hidden'); build();
+});
+settingsBtn.addEventListener('click',()=>{
+  const s=JSON.parse(localStorage.getItem('lw')||'{}');
+  if(s.birth) bInput.value=s.birth;
+  if(s.age) aInput.value=s.age;
+  modal.classList.remove('hidden');
+});
+aInput.addEventListener('keydown',e=>{if(e.key==='Enter')startBtn.click()});
+bInput.addEventListener('keydown',e=>{if(e.key==='Enter')startBtn.click()});
+
+init();
+</script>
+</body>
+</html>
