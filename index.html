@@ -56,19 +56,22 @@
     --cell-size:10px;
     --cell-gap:2px;
     --cell-radius:var(--radius-xs);
-    --cell-past:#e8e4f5;
-    --cell-past-border:#d4cee8;
+    --cell-past:var(--surface-base);
+    --cell-past-border:var(--surface-base);
     --cell-current-bg:var(--text-inverse);
     --cell-current-border:#a08ae8;
+    --cell-current-dot:#ffffff;
     --cell-future-bg:transparent;
-    --cell-future-border:#e0dcee;
-    --cell-before-bg:rgba(16,15,18,.03);
+    --cell-future-border:#c8c0db;
+    --cell-future-near-bg:rgba(141,111,222,.08);
+    --cell-future-near-border:var(--text-inverse);
+    --cell-before-bg:transparent;
     --cell-before-border:transparent;
     --decade-gap:8px;
     --week-end-margin:7px;
     --grid-bg:#f6f2ff;
     --focus-ring:0 0 0 3px rgba(141,111,222,.25);
-    --font-size-hero:72px;
+
     --color-bg-input:#f3effa;
     --color-border-input:#e0dcee;
     --color-track-bg:#e0dcee;
@@ -272,30 +275,15 @@
      ═══════════════════════════════════════════════════════ */
   .counter{
     text-align:center;
-    margin-bottom:var(--space-8);
-    animation:fadeUp var(--motion-normal) .3s both;
-  }
-  .counter-num{
-    font-size:var(--font-size-hero);
-    font-weight:700;
-    letter-spacing:-3px;
-    line-height:1;
-    color:var(--text-primary);
-  }
-  .counter-num .accent{color:var(--text-inverse)}
-  .counter-lbl{
-    font-size:var(--font-size-sm);
-    color:var(--text-tertiary);
-    margin-top:var(--space-1);
-    text-transform:uppercase;
-    letter-spacing:1px;
+    margin-bottom:var(--space-6);
+    animation:fadeUp var(--motion-normal) .2s both;
   }
   .counter-bar{
     display:flex;align-items:center;justify-content:center;gap:var(--space-2);
-    margin-top:var(--space-5);
+    margin-bottom:var(--space-6);
   }
   .counter-bar .track{
-    width:220px;height:3px;
+    width:200px;height:3px;
     background:var(--color-track-bg);
     border-radius:var(--radius-xl);
     overflow:hidden;
@@ -312,12 +300,100 @@
     font-variant-numeric:tabular-nums;
     min-width:36px;
   }
+  .counter-stats{
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    gap:var(--space-8);
+  }
+  .counter-stat{
+    text-align:center;
+    flex-shrink:0;
+  }
+  .stat-main{
+    display:flex;
+    align-items:baseline;
+    justify-content:center;
+    gap:var(--space-2);
+    margin-bottom:var(--space-1);
+  }
+  .stat-num{
+    font-size:var(--font-size-3xl);
+    font-weight:700;
+    letter-spacing:-1.5px;
+    line-height:1;
+    color:var(--text-primary);
+  }
+  .stat-accent{color:var(--text-inverse)}
+  .stat-main-num{
+    font-size:var(--font-size-4xl);
+    font-weight:700;
+    letter-spacing:-2px;
+    line-height:1;
+    color:var(--text-primary);
+  }
+  .stat-main-label{
+    font-size:var(--font-size-sm);
+    color:var(--text-tertiary);
+    text-transform:uppercase;
+    letter-spacing:2px;
+    font-weight:500;
+  }
+  .stat-bar-row{
+    display:flex;
+    align-items:center;
+    gap:var(--space-2);
+    justify-content:center;
+  }
+  .stat-track{
+    width:48px;height:4px;
+    border-radius:var(--radius-xl);
+    background:var(--color-track-bg);
+    overflow:hidden;
+    flex-shrink:0;
+  }
+  .stat-fill{
+    height:100%;width:0;
+    background:var(--text-inverse);
+    border-radius:var(--radius-xl);
+    transition:width 1.5s cubic-bezier(.22,1,.36,1);
+  }
+  .stat-bar-num{
+    font-size:var(--font-size-xl);
+    font-weight:600;
+    color:var(--text-primary);
+    font-variant-numeric:tabular-nums;
+    min-width:24px;
+    line-height:1;
+  }
+  .stat-label{
+    font-size:var(--font-size-xs);
+    color:var(--text-tertiary);
+    letter-spacing:.5px;
+    margin-top:var(--space-1);
+  }
+  @media(max-width:700px){
+    .counter-stats{gap:var(--space-6)}
+    .stat-num{font-size:var(--font-size-2xl)}
+    .stat-main-num{font-size:var(--font-size-3xl)}
+    .stat-track{width:36px}
+    .stat-bar-num{font-size:var(--font-size-lg)}
+  }
+  @media(max-width:480px){
+    .counter-bar .track{width:120px}
+    .counter-stats{flex-wrap:wrap;gap:var(--space-5)}
+    .stat-num{font-size:var(--font-size-xl)}
+    .stat-main-num{font-size:var(--font-size-2xl)}
+    .stat-track{width:30px}
+    .stat-bar-num{font-size:var(--font-size-md)}
+  }
 
   /* ═══════════════════════════════════════════════════════
      GRID
      ═══════════════════════════════════════════════════════ */
   .grid-section{
     animation:fadeUp var(--motion-normal) .5s both;
+    margin-bottom:var(--space-8);
   }
   .grid-scroll{
     border-radius:var(--radius-sm);
@@ -389,16 +465,38 @@
     opacity:1;
     transform:scale(1);
   }
+
+  /* ── CURRENT: you are here, this is the moment ── */
   .c.current{
     background:var(--cell-current-bg);
     border-color:var(--cell-current-border);
-    box-shadow:0 0 6px rgba(141,111,222,.28);
-    animation:pulse 3s ease-in-out infinite;
-    z-index:1;
+    box-shadow:0 0 8px rgba(141,111,222,.45);
+    animation:pulse-current 1.5s ease-in-out infinite;
+    z-index:2;
   }
+  .c.current::after{
+    content:'';
+    position:absolute;
+    inset:50%;
+    width:3px;height:3px;
+    margin:-1.5px 0 0 -1.5px;
+    border-radius:var(--radius-xl);
+    background:var(--cell-current-dot);
+    box-shadow:0 0 4px rgba(255,255,255,.6);
+  }
+
+  /* ── FUTURE: precious near, void far ── */
   .c.future{
     background:var(--cell-future-bg);
     border-color:var(--cell-future-border);
+    opacity:calc(1 - var(--future-fade, 0));
+    transition:background var(--motion-instant),border-color var(--motion-instant),
+              opacity .5s,transform .5s cubic-bezier(.34,1.56,.64,1);
+  }
+  .c.future-near{
+    background:var(--cell-future-near-bg);
+    border-color:var(--cell-future-near-border);
+    opacity:calc(1 - var(--future-fade, 0) * .5);
   }
 
   /* ── 4-week grouping (~monthly) ── */
@@ -410,38 +508,23 @@
     background:var(--color-border-input);
   }
 
-  /* ── Tooltip on hover ── */
-  .c[data-tip]:hover::before{
-    content:attr(data-tip);
-    position:absolute;
-    bottom:calc(100% + 4px);
-    left:50%;transform:translateX(-50%);
-    background:var(--surface-base);
-    color:var(--surface-strong);
-    font-size:var(--font-size-xs);
-    font-family:var(--font-family);
-    padding:var(--space-1) var(--space-3);
-    border-radius:var(--radius-xs);
-    white-space:nowrap;
-    pointer-events:none;
-    z-index:10;
-    opacity:0;
-    animation:tooltipIn var(--motion-fast) forwards;
-  }
-  @keyframes tooltipIn{
-    to{opacity:.9}
-  }
+
+
+  /* ═══════════════════════════════════════════════════════
+     MINI STATS — visual sisa
+     ═══════════════════════════════════════════════════════ */
+
 
   /* ═══════════════════════════════════════════════════════
      LEGEND
      ═══════════════════════════════════════════════════════ */
   .legend{
     display:flex;justify-content:center;gap:var(--space-7);
-    margin-top:var(--space-6);
+    margin-bottom:var(--space-6);
     flex-wrap:wrap;
     font-size:var(--font-size-sm);
     color:var(--text-tertiary);
-    animation:fadeUp var(--motion-normal) .6s both;
+    animation:fadeUp var(--motion-normal) .3s both;
   }
   .legend-item{display:flex;align-items:center;gap:var(--space-1)}
   .dot{
@@ -454,7 +537,7 @@
   .dot.now{
     background:var(--cell-current-bg);
     border-color:var(--cell-current-border);
-    animation:pulse 3s infinite;
+    animation:pulse-legend 3s infinite;
   }
   .dot.future{background:transparent;border-color:var(--cell-future-border)}
 
@@ -463,8 +546,8 @@
      ═══════════════════════════════════════════════════════ */
   .footer{
     text-align:center;
-    padding-top:var(--space-7);
-    animation:fadeUp var(--motion-normal) .7s both;
+    margin-bottom:var(--space-7);
+    animation:fadeUp var(--motion-normal) .4s both;
   }
   .footer-quote{
     font-size:var(--font-size-sm);
@@ -507,7 +590,11 @@
     from{opacity:0;transform:translateY(var(--space-6))}
     to{opacity:1;transform:translateY(0)}
   }
-  @keyframes pulse{
+  @keyframes pulse-current{
+    0%,100%{box-shadow:0 0 4px rgba(141,111,222,.35)}
+    50%{box-shadow:0 0 12px rgba(141,111,222,.6),0 0 24px rgba(141,111,222,.2)}
+  }
+  @keyframes pulse-legend{
     0%,100%{box-shadow:0 0 4px rgba(141,111,222,.2)}
     50%{box-shadow:0 0 10px rgba(141,111,222,.4),0 0 20px rgba(141,111,222,.1)}
   }
@@ -523,7 +610,6 @@
     }
     .hero{padding:var(--space-7) var(--space-6) var(--space-6)}
     .hero h1{font-size:var(--font-size-3xl)}
-    .counter-num{font-size:48px}
     .container{padding:var(--space-6) var(--space-6)}
     .modal{padding:var(--space-7) var(--space-6)}
     .lbl{font-size:7px;min-width:22px}
@@ -536,7 +622,6 @@
     }
     .hero{padding:var(--space-6) var(--space-4) var(--space-5)}
     .hero h1{font-size:var(--font-size-2xl)}
-    .counter-num{font-size:36px}
     .grid-scroll{padding:var(--space-3) var(--space-4)}
     .container{padding:var(--space-5) var(--space-3) var(--space-6)}
     .lbl{font-size:6px;min-width:16px;padding-right:4px}
@@ -580,18 +665,54 @@
 
   <div class="container">
 
-    <!-- Counter -->
     <div class="counter">
-      <div class="counter-num"><span class="accent" id="counterNum">0</span></div>
-      <div class="counter-lbl">minggu tersisa</div>
       <div class="counter-bar">
         <span class="pct" id="pctL">0%</span>
         <div class="track"><div class="fill" id="barFill"></div></div>
         <span class="pct" id="pctR">100%</span>
       </div>
+
+      <div class="counter-stats">
+        <div class="counter-stat">
+          <div class="stat-main">
+            <span class="stat-main-num stat-accent" id="counterNum">0</span>
+            <span class="stat-main-label">akhir pekan</span>
+          </div>
+        </div>
+
+        <div class="counter-stat">
+          <div class="stat-bar-row">
+            <div class="stat-track"><div class="stat-fill" id="mile1Fill"></div></div>
+            <span class="stat-bar-num" id="mile1Num">0</span>
+          </div>
+          <div class="stat-label" id="mile1Label">—</div>
+        </div>
+
+        <div class="counter-stat">
+          <div class="stat-bar-row">
+            <div class="stat-track"><div class="stat-fill" id="bdayFill"></div></div>
+            <span class="stat-bar-num" id="bdayNum">0</span>
+          </div>
+          <div class="stat-label" id="bdayLabel">—</div>
+        </div>
+      </div>
     </div>
 
-    <!-- Grid -->
+    <!-- Legend -->
+    <div class="legend">
+      <div class="legend-item"><span class="dot past"></span>Terlewati</div>
+      <div class="legend-item"><span class="dot now"></span>Sekarang</div>
+      <div class="legend-item"><span class="dot future"></span>Tersisa</div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+
+      <button class="settings-btn" id="settingsBtn">⚙️ Pengaturan</button>
+      <p class="config-info" id="configInfo"></p>
+    </div>
+
+    <!-- Grid (paling bawah) -->
     <div class="grid-section">
       <div class="grid-scroll">
         <div class="grid-outer">
@@ -599,19 +720,6 @@
           <div class="grid" id="grid"></div>
         </div>
       </div>
-      <div class="legend">
-        <div class="legend-item"><span class="dot past"></span>Terlewati</div>
-        <div class="legend-item"><span class="dot now"></span>Sekarang</div>
-        <div class="legend-item"><span class="dot future"></span>Tersisa</div>
-      </div>
-    </div>
-
-    <!-- Footer -->
-    <div class="footer">
-      <p class="footer-quote">"Hidup bukan tentang berapa banyak minggu yang kau miliki, tapi apa yang kau lakukan dengan minggu yang tersisa."</p>
-      <button class="settings-btn" id="settingsBtn">⚙️ Pengaturan</button>
-      <p class="config-info" id="configInfo"></p>
-    </div>
 
   </div>
 </div>
@@ -626,6 +734,8 @@ const modal=$('#modal'), bInput=$('#birthInput'), aInput=$('#ageInput'), startBt
 const grid=$('#grid'), labels=$('#gridLabels');
 const cNum=$('#counterNum'), bar=$('#barFill'), pL=$('#pctL'), pR=$('#pctR');
 const info=$('#ageInfo');
+const mile1Fill=$('#mile1Fill'), mile1Num=$('#mile1Num'), mile1Label=$('#mile1Label');
+const bdayFill=$('#bdayFill'), bdayNum=$('#bdayNum'), bdayLabel=$('#bdayLabel');
 const settingsBtn=$('#settingsBtn');
 
 function fmt(d){
@@ -646,6 +756,9 @@ function cellStatus(r,c){
   if(s>death) return 'after-death';
   if(e<now) return 'past';
   if(s<=now&&now<=e) return 'current';
+  // determine near vs far future
+  const weeksAhead=(s-now)/6048e5; // ms → weeks
+  if(weeksAhead<=78) return 'future-near'; // ~1.5 tahun
   return 'future';
 }
 
@@ -700,10 +813,13 @@ function build(){
       el.className='c '+st;
       if(c%4===3&&c<51) el.classList.add('week-end');
 
-      // tooltip data — first/last week of year
-      const{s,e}=weekDates(r,c);
-      if(st==='past'||st==='current'){
-        el.setAttribute('data-tip',fmt(s)+' — '+fmt(e));
+      // future gradient: fade into the void
+      if(st==='future'||st==='future-near'){
+        const globalW=r*52+c;
+        const weeksAhead=Math.max(0,globalW-livedW);
+        const totalFuture=Math.max(1,totalW-livedW);
+        const fade=Math.min(1,Math.pow(weeksAhead/totalFuture,.7));
+        el.style.setProperty('--future-fade',fade);
       }
 
       row.appendChild(el);
@@ -723,6 +839,40 @@ function build(){
 
   const yrs=Math.floor(daysLived/365.25);
   info.textContent='Usia '+yrs+' tahun · Target '+TA+' tahun · Lahir '+fmt(BD);
+
+  // ── Counter stats: menuju milestone ──
+  const now2=new Date();
+  const birthY=BD.getFullYear();
+  const curAgeY=Math.round(daysLived/365.25);
+
+  function calcMile(mileAge){
+    const d=new Date(BD); d.setFullYear(birthY+mileAge);
+    const weeks=Math.max(0,Math.floor((d-now2)/6048e5));
+    const prev=d; prev.setFullYear(birthY+mileAge-5);
+    const total=(d-prev)/6048e5;
+    const elapsed=Math.max(0,(now2-prev)/6048e5);
+    const pct=Math.min(100,(elapsed/total)*100);
+    return{weeks,pct};
+  }
+  const nextMile=Math.ceil(curAgeY/5)*5;
+  const m1=calcMile(nextMile);
+  mile1Fill.style.width=m1.pct+'%';
+  mile1Num.textContent=m1.weeks;
+  mile1Label.textContent='menuju '+nextMile;
+
+  // ── Birthday ──
+  const nextBday=new Date(BD);
+  nextBday.setFullYear(now2.getFullYear());
+  if(nextBday<now2) nextBday.setFullYear(now2.getFullYear()+1);
+  const bdayWeeks=Math.max(0,Math.floor((nextBday-now2)/6048e5));
+  const lastBday=new Date(nextBday);
+  lastBday.setFullYear(nextBday.getFullYear()-1);
+  const bdayTotal=(nextBday-lastBday)/6048e5;
+  const bdayElapsed=Math.max(0,(now2-lastBday)/6048e5);
+  const bdayPct=Math.min(100,(bdayElapsed/bdayTotal)*100);
+  bdayFill.style.width=bdayPct+'%';
+  bdayNum.textContent=bdayWeeks;
+  bdayLabel.textContent=nextBday.getFullYear()-birthY;
 
   // Cascade past-cell animation
   animPast(pastCells);
