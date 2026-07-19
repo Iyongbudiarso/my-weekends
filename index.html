@@ -71,7 +71,7 @@
     --week-end-margin:7px;
     --grid-bg:#f6f2ff;
     --focus-ring:0 0 0 3px rgba(141,111,222,.25);
-    --font-size-hero:72px;
+
     --color-bg-input:#f3effa;
     --color-border-input:#e0dcee;
     --color-track-bg:#e0dcee;
@@ -278,28 +278,12 @@
     margin-bottom:var(--space-6);
     animation:fadeUp var(--motion-normal) .2s both;
   }
-  .counter-num{
-    font-size:var(--font-size-hero);
-    font-weight:700;
-    letter-spacing:-3px;
-    line-height:1;
-    color:var(--text-primary);
-  }
-  .counter-num .accent{color:var(--text-inverse)}
-  .counter-lbl{
-    font-size:var(--font-size-sm);
-    color:var(--text-tertiary);
-    margin-top:var(--space-1);
-    text-transform:uppercase;
-    letter-spacing:3px;
-    font-weight:500;
-  }
   .counter-bar{
     display:flex;align-items:center;justify-content:center;gap:var(--space-2);
-    margin-top:var(--space-5);
+    margin-bottom:var(--space-6);
   }
   .counter-bar .track{
-    width:220px;height:3px;
+    width:200px;height:3px;
     background:var(--color-track-bg);
     border-radius:var(--radius-xl);
     overflow:hidden;
@@ -315,6 +299,93 @@
     color:var(--text-tertiary);
     font-variant-numeric:tabular-nums;
     min-width:36px;
+  }
+  .counter-stats{
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    gap:var(--space-8);
+  }
+  .counter-stat{
+    text-align:center;
+    flex-shrink:0;
+  }
+  .stat-main{
+    display:flex;
+    align-items:baseline;
+    justify-content:center;
+    gap:var(--space-2);
+    margin-bottom:var(--space-1);
+  }
+  .stat-num{
+    font-size:var(--font-size-3xl);
+    font-weight:700;
+    letter-spacing:-1.5px;
+    line-height:1;
+    color:var(--text-primary);
+  }
+  .stat-accent{color:var(--text-inverse)}
+  .stat-main-num{
+    font-size:var(--font-size-4xl);
+    font-weight:700;
+    letter-spacing:-2px;
+    line-height:1;
+    color:var(--text-primary);
+  }
+  .stat-main-label{
+    font-size:var(--font-size-sm);
+    color:var(--text-tertiary);
+    text-transform:uppercase;
+    letter-spacing:2px;
+    font-weight:500;
+  }
+  .stat-bar-row{
+    display:flex;
+    align-items:center;
+    gap:var(--space-2);
+    justify-content:center;
+  }
+  .stat-track{
+    width:48px;height:4px;
+    border-radius:var(--radius-xl);
+    background:var(--color-track-bg);
+    overflow:hidden;
+    flex-shrink:0;
+  }
+  .stat-fill{
+    height:100%;width:0;
+    background:var(--text-inverse);
+    border-radius:var(--radius-xl);
+    transition:width 1.5s cubic-bezier(.22,1,.36,1);
+  }
+  .stat-bar-num{
+    font-size:var(--font-size-xl);
+    font-weight:600;
+    color:var(--text-primary);
+    font-variant-numeric:tabular-nums;
+    min-width:24px;
+    line-height:1;
+  }
+  .stat-label{
+    font-size:var(--font-size-xs);
+    color:var(--text-tertiary);
+    letter-spacing:.5px;
+    margin-top:var(--space-1);
+  }
+  @media(max-width:700px){
+    .counter-stats{gap:var(--space-6)}
+    .stat-num{font-size:var(--font-size-2xl)}
+    .stat-main-num{font-size:var(--font-size-3xl)}
+    .stat-track{width:36px}
+    .stat-bar-num{font-size:var(--font-size-lg)}
+  }
+  @media(max-width:480px){
+    .counter-bar .track{width:120px}
+    .counter-stats{flex-wrap:wrap;gap:var(--space-5)}
+    .stat-num{font-size:var(--font-size-xl)}
+    .stat-main-num{font-size:var(--font-size-2xl)}
+    .stat-track{width:30px}
+    .stat-bar-num{font-size:var(--font-size-md)}
   }
 
   /* ═══════════════════════════════════════════════════════
@@ -442,57 +513,7 @@
   /* ═══════════════════════════════════════════════════════
      MINI STATS — visual sisa
      ═══════════════════════════════════════════════════════ */
-  .mini-stats{
-    display:flex;
-    justify-content:center;
-    gap:var(--space-8);
-    margin-top:var(--space-6);
-    animation:fadeUp var(--motion-normal) .35s both;
-  }
-  .mini-stat{
-    display:flex;
-    flex-direction:column;
-    align-items:flex-start;
-    gap:var(--space-1);
-  }
-  .mini-bar-row{
-    display:flex;
-    align-items:center;
-    gap:var(--space-2);
-  }
-  .mini-track{
-    width:60px;height:4px;
-    border-radius:var(--radius-xl);
-    background:var(--color-track-bg);
-    overflow:hidden;
-    flex-shrink:0;
-  }
-  .mini-fill{
-    height:100%;width:0;
-    background:var(--text-inverse);
-    border-radius:var(--radius-xl);
-    transition:width 1.5s cubic-bezier(.22,1,.36,1);
-  }
-  .mini-num{
-    font-size:var(--font-size-lg);
-    font-weight:600;
-    color:var(--text-primary);
-    font-variant-numeric:tabular-nums;
-    min-width:28px;
-    line-height:1;
-  }
-  .mini-label{
-    font-size:var(--font-size-xs);
-    color:var(--text-tertiary);
-    letter-spacing:.5px;
-    padding-left:calc(60px + var(--space-2)); /* align with number */
-  }
-  @media(max-width:480px){
-    .mini-stats{gap:var(--space-6)}
-    .mini-track{width:44px}
-    .mini-num{font-size:var(--font-size-md);min-width:22px}
-    .mini-label{padding-left:calc(44px + var(--space-2))}
-  }
+
 
   /* ═══════════════════════════════════════════════════════
      LEGEND
@@ -589,7 +610,6 @@
     }
     .hero{padding:var(--space-7) var(--space-6) var(--space-6)}
     .hero h1{font-size:var(--font-size-3xl)}
-    .counter-num{font-size:48px}
     .container{padding:var(--space-6) var(--space-6)}
     .modal{padding:var(--space-7) var(--space-6)}
     .lbl{font-size:7px;min-width:22px}
@@ -602,7 +622,6 @@
     }
     .hero{padding:var(--space-6) var(--space-4) var(--space-5)}
     .hero h1{font-size:var(--font-size-2xl)}
-    .counter-num{font-size:36px}
     .grid-scroll{padding:var(--space-3) var(--space-4)}
     .container{padding:var(--space-5) var(--space-3) var(--space-6)}
     .lbl{font-size:6px;min-width:16px;padding-right:4px}
@@ -647,28 +666,34 @@
   <div class="container">
 
     <div class="counter">
-      <div class="counter-num"><span class="accent" id="counterNum">0</span></div>
-      <div class="counter-lbl">akhir pekan</div>
       <div class="counter-bar">
         <span class="pct" id="pctL">0%</span>
         <div class="track"><div class="fill" id="barFill"></div></div>
         <span class="pct" id="pctR">100%</span>
       </div>
 
-      <div class="mini-stats" id="miniStats">
-        <div class="mini-stat">
-          <div class="mini-bar-row">
-            <div class="mini-track"><div class="mini-fill" id="yearFill"></div></div>
-            <span class="mini-num" id="yearNum">0</span>
+      <div class="counter-stats">
+        <div class="counter-stat">
+          <div class="stat-main">
+            <span class="stat-main-num stat-accent" id="counterNum">0</span>
+            <span class="stat-main-label">akhir pekan</span>
           </div>
-          <span class="mini-label" id="yearLabel">—</span>
         </div>
-        <div class="mini-stat">
-          <div class="mini-bar-row">
-            <div class="mini-track"><div class="mini-fill" id="milestoneFill"></div></div>
-            <span class="mini-num" id="milestoneNum">0</span>
+
+        <div class="counter-stat">
+          <div class="stat-bar-row">
+            <div class="stat-track"><div class="stat-fill" id="mile1Fill"></div></div>
+            <span class="stat-bar-num" id="mile1Num">0</span>
           </div>
-          <span class="mini-label" id="milestoneLabel">—</span>
+          <div class="stat-label" id="mile1Label">—</div>
+        </div>
+
+        <div class="counter-stat">
+          <div class="stat-bar-row">
+            <div class="stat-track"><div class="stat-fill" id="mile2Fill"></div></div>
+            <span class="stat-bar-num" id="mile2Num">0</span>
+          </div>
+          <div class="stat-label" id="mile2Label">—</div>
         </div>
       </div>
     </div>
@@ -709,8 +734,8 @@ const modal=$('#modal'), bInput=$('#birthInput'), aInput=$('#ageInput'), startBt
 const grid=$('#grid'), labels=$('#gridLabels');
 const cNum=$('#counterNum'), bar=$('#barFill'), pL=$('#pctL'), pR=$('#pctR');
 const info=$('#ageInfo');
-const yearFill=$('#yearFill'), yearNum=$('#yearNum'), yearLabel=$('#yearLabel');
-const mileFill=$('#milestoneFill'), mileNum=$('#milestoneNum'), mileLabel=$('#milestoneLabel');
+const mile1Fill=$('#mile1Fill'), mile1Num=$('#mile1Num'), mile1Label=$('#mile1Label');
+const mile2Fill=$('#mile2Fill'), mile2Num=$('#mile2Num'), mile2Label=$('#mile2Label');
 const settingsBtn=$('#settingsBtn');
 
 function fmt(d){
@@ -815,37 +840,32 @@ function build(){
   const yrs=Math.floor(daysLived/365.25);
   info.textContent='Usia '+yrs+' tahun · Target '+TA+' tahun · Lahir '+fmt(BD);
 
-  // ── Mini stats ──
+  // ── Counter stats: menuju milestone ──
   const now2=new Date();
-  // Year remaining
-  const yearEnd=new Date(now2.getFullYear(),11,31);
-  const yearElapsed=(now2-new Date(now2.getFullYear(),0,1))/864e5;
-  const yearTotal=(yearEnd-new Date(now2.getFullYear(),0,1))/864e5+1;
-  const yearPct=Math.min(100,(yearElapsed/yearTotal)*100);
-  const yearWeeksLeft=Math.max(0,Math.floor((yearEnd-now2)/6048e5));
-  yearFill.style.width=yearPct+'%';
-  yearNum.textContent=yearWeeksLeft;
-  yearLabel.textContent=now2.getFullYear();
-
-  // Milestone: next 5-year
   const birthY=BD.getFullYear();
   const curAgeY=Math.round(daysLived/365.25);
-  const nextMilestone=Math.ceil(curAgeY/5)*5;
-  const mileDate=new Date(BD);
-  mileDate.setFullYear(birthY+nextMilestone);
-  const mileWeeks=Math.max(0,Math.floor((mileDate-now2)/6048e5));
-  const mileTotal=nextMilestone*52;
-  const mileElapsed=(curAgeY%5)*52+((curAgeY%5)*52===0?0:livedW%52);
-  // or simpler: total weeks from milestone start
-  const prevMilestone=nextMilestone-5;
-  const prevMilestoneDate=new Date(BD);
-  prevMilestoneDate.setFullYear(birthY+prevMilestone);
-  const totalMileWeeks=(mileDate-prevMilestoneDate)/6048e5;
-  const mileElapsedWeeks=Math.max(0,(now2-prevMilestoneDate)/6048e5);
-  const milePct=Math.min(100,(mileElapsedWeeks/totalMileWeeks)*100);
-  mileFill.style.width=milePct+'%';
-  mileNum.textContent=mileWeeks;
-  mileLabel.textContent='menuju '+nextMilestone;
+
+  function calcMile(mileAge){
+    const d=new Date(BD); d.setFullYear(birthY+mileAge);
+    const weeks=Math.max(0,Math.floor((d-now2)/6048e5));
+    const prev=d; prev.setFullYear(birthY+mileAge-5);
+    const total=(d-prev)/6048e5;
+    const elapsed=Math.max(0,(now2-prev)/6048e5);
+    const pct=Math.min(100,(elapsed/total)*100);
+    return{weeks,pct};
+  }
+  const nextMile=Math.ceil(curAgeY/5)*5;
+  const nextNextMile=nextMile+5;
+
+  const m1=calcMile(nextMile);
+  mile1Fill.style.width=m1.pct+'%';
+  mile1Num.textContent=m1.weeks;
+  mile1Label.textContent='menuju '+nextMile;
+
+  const m2=calcMile(nextNextMile);
+  mile2Fill.style.width=m2.pct+'%';
+  mile2Num.textContent=m2.weeks;
+  mile2Label.textContent='menuju '+nextNextMile;
 
   // Cascade past-cell animation
   animPast(pastCells);
