@@ -5,11 +5,11 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Life in Weeks — Memento Mori</title>
 <style>
-  /* ═══════════════════════════════════════════════════
+  /* ═══════════════════════════════════════════════════════
      DESIGN TOKENS (from DESIGN.md)
-     ═══════════════════════════════════════════════════ */
+     ═══════════════════════════════════════════════════════ */
   :root{
-    /* colors */
+    /* ── colors ── */
     --text-primary:#100f12;
     --text-tertiary:#787685;
     --text-inverse:#8d6fde;
@@ -17,7 +17,7 @@
     --surface-base:#000000;
     --surface-strong:#fbfaff;
 
-    /* typography */
+    /* ── typography ── */
     --font-family:'Ppmori',Arial,sans-serif;
     --font-size-xs:10.4px;
     --font-size-sm:12px;
@@ -30,7 +30,7 @@
     --font-weight-base:200;
     --line-height-base:20px;
 
-    /* spacing */
+    /* ── spacing ── */
     --space-1:8.4px;
     --space-2:10px;
     --space-3:12px;
@@ -40,35 +40,38 @@
     --space-7:18px;
     --space-8:20px;
 
-    /* radius */
+    /* ── radius ── */
     --radius-xs:5.6px;
     --radius-sm:16px;
     --radius-md:20px;
     --radius-lg:24px;
     --radius-xl:2560px;
 
-    /* motion */
+    /* ── motion ── */
     --motion-instant:200ms;
     --motion-fast:300ms;
     --motion-normal:400ms;
 
-    /* derived cell tokens */
+    /* ── derived tokens ── */
     --cell-size:10px;
     --cell-gap:2px;
+    --cell-radius:var(--radius-xs);
     --cell-past:#e8e4f5;
     --cell-past-border:#d4cee8;
     --cell-current-bg:var(--text-inverse);
     --cell-current-border:#a08ae8;
     --cell-future-bg:transparent;
     --cell-future-border:#e0dcee;
-    --cell-before-bg:rgba(0,0,0,.03);
+    --cell-before-bg:rgba(16,15,18,.03);
     --cell-before-border:transparent;
-    --cell-radius:var(--radius-xs);
+    --decade-gap:8px;
+    --grid-bg:#f6f2ff;
+    --focus-ring:0 0 0 3px rgba(141,111,222,.25);
   }
 
-  /* ═══════════════════════════════════════════════════
+  /* ═══════════════════════════════════════════════════════
      RESET & BASE
-     ═══════════════════════════════════════════════════ */
+     ═══════════════════════════════════════════════════════ */
   *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
   html{scroll-behavior:smooth}
   body{
@@ -85,32 +88,55 @@
     -webkit-font-smoothing:antialiased;
     -moz-osx-font-smoothing:grayscale;
   }
+  :focus-visible{
+    outline:none;
+    box-shadow:var(--focus-ring);
+  }
 
   ::-webkit-scrollbar{width:5px;height:5px}
   ::-webkit-scrollbar-track{background:transparent}
-  ::-webkit-scrollbar-thumb{background:#e0dcee;border-radius:var(--radius-xl)}
+  ::-webkit-scrollbar-thumb{background:#d4cee8;border-radius:var(--radius-xl)}
+  ::-webkit-scrollbar-thumb:hover{background:#c0b8e0}
 
-  /* ═══════════════════════════════════════════════════
+  /* ═══════════════════════════════════════════════════════
      MODAL
-     ═══════════════════════════════════════════════════ */
+     ═══════════════════════════════════════════════════════ */
   .modal-overlay{
     position:fixed;inset:0;z-index:1000;
-    display:none;
+    display:flex;
     align-items:center;justify-content:center;
-    background:rgba(16,15,18,.85);
-    backdrop-filter:blur(8px);
+    background:rgba(16,15,18,.75);
+    backdrop-filter:blur(6px);
+    opacity:0;
+    pointer-events:none;
+    transition:opacity var(--motion-normal);
   }
-  .modal-overlay.show{display:flex}
+  .modal-overlay.show{
+    opacity:1;
+    pointer-events:auto;
+  }
   .modal{
     background:var(--surface-strong);
     border-radius:var(--radius-md);
-    padding:var(--space-8) var(--space-7);
+    padding:var(--space-8) var(--space-7) var(--space-8);
     max-width:400px;width:90%;text-align:center;
-    box-shadow:0 4px 24px rgba(16,15,18,.12);
+    box-shadow:0 8px 32px rgba(16,15,18,.1), 0 2px 8px rgba(16,15,18,.06);
+    transform:translateY(var(--space-6)) scale(.97);
+    transition:transform var(--motion-normal) cubic-bezier(.22,1,.36,1);
+  }
+  .modal-overlay.show .modal{
+    transform:translateY(0) scale(1);
+  }
+  .modal-icon{
+    font-size:var(--font-size-4xl);
+    margin-bottom:var(--space-3);
+    display:block;
+    opacity:.7;
   }
   .modal h1{
-    font-size:var(--font-size-2xl);
-    font-weight:700;
+    font-size:var(--font-size-3xl);
+    font-weight:500;
+    letter-spacing:-.5px;
     color:var(--text-primary);
     margin-bottom:var(--space-1);
   }
@@ -119,7 +145,14 @@
     font-size:var(--font-size-sm);
     color:var(--text-tertiary);
     margin-bottom:var(--space-7);
-    line-height:1.6;
+    line-height:1.65;
+  }
+  .modal .sub-hint{
+    font-size:var(--font-size-xs);
+    color:var(--text-tertiary);
+    margin-top:var(--space-2);
+    opacity:.55;
+    line-height:1.4;
   }
   .modal label{
     display:block;
@@ -136,7 +169,7 @@
   .modal input{
     width:100%;
     padding:var(--space-3) var(--space-5);
-    background:#f4f0ff;
+    background:#f3effa;
     border:1px solid #e0dcee;
     border-radius:var(--radius-sm);
     color:var(--text-primary);
@@ -145,10 +178,15 @@
     font-weight:var(--font-weight-base);
     outline:none;
     transition:border-color var(--motion-instant),box-shadow var(--motion-instant);
+    -webkit-appearance:none;
   }
   .modal input:focus{
     border-color:var(--text-inverse);
-    box-shadow:0 0 0 3px rgba(141,111,222,.15);
+    box-shadow:var(--focus-ring);
+  }
+  .modal input::placeholder{
+    color:var(--text-tertiary);
+    opacity:.4;
   }
   .modal button{
     margin-top:var(--space-7);
@@ -162,67 +200,92 @@
     font-weight:600;
     font-family:var(--font-family);
     cursor:pointer;
-    transition:opacity var(--motion-instant),transform var(--motion-fast);
+    transition:opacity var(--motion-instant),transform var(--motion-fast),box-shadow var(--motion-instant);
+    -webkit-appearance:none;
   }
-  .modal button:hover{opacity:.88;transform:translateY(-1px)}
+  .modal button:hover{
+    opacity:.9;
+    transform:translateY(-1px);
+    box-shadow:0 4px 16px rgba(141,111,222,.25);
+  }
   .modal button:active{transform:translateY(0)}
+  .modal button:focus-visible{
+    box-shadow:var(--focus-ring), 0 4px 16px rgba(141,111,222,.25);
+  }
 
-  /* ═══════════════════════════════════════════════════
+  /* ═══════════════════════════════════════════════════════
      LAYOUT
-     ═══════════════════════════════════════════════════ */
+     ═══════════════════════════════════════════════════════ */
+  .page{
+    width:100%;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+  }
+
+  /* ── Hero header ── */
+  .hero{
+    width:100%;
+    background:var(--surface-base);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding:var(--space-8) var(--space-8) var(--space-7);
+  }
+  .hero-inner{
+    max-width:880px;
+    width:100%;
+    text-align:center;
+  }
+  .hero .icon{font-size:var(--font-size-3xl);margin-bottom:var(--space-1);opacity:.55}
+  .hero h1{
+    font-size:var(--font-size-4xl);
+    font-weight:400;
+    letter-spacing:-.5px;
+    color:var(--surface-strong);
+  }
+  .hero h1 span{color:var(--text-inverse)}
+  .hero .info{
+    font-size:var(--font-size-sm);
+    color:var(--text-tertiary);
+    margin-top:var(--space-1);
+  }
+
   .container{
     max-width:880px;
     width:100%;
     padding:var(--space-8) var(--space-8) var(--space-7);
   }
 
-  header{
-    text-align:center;
-    margin-bottom:var(--space-7);
-    animation:fadeUp var(--motion-normal) .2s both;
-  }
-  header .icon{font-size:var(--font-size-2xl);margin-bottom:var(--space-1)}
-  header h1{
-    font-size:var(--font-size-4xl);
-    font-weight:400;
-    letter-spacing:-.5px;
-  }
-  header h1 span{color:var(--text-inverse)}
-  header .info{
-    font-size:var(--font-size-sm);
-    color:var(--text-tertiary);
-    margin-top:var(--space-1);
-  }
-
-  /* ═══════════════════════════════════════════════════
+  /* ═══════════════════════════════════════════════════════
      COUNTER
-     ═══════════════════════════════════════════════════ */
+     ═══════════════════════════════════════════════════════ */
   .counter{
     text-align:center;
     margin-bottom:var(--space-8);
     animation:fadeUp var(--motion-normal) .3s both;
   }
   .counter-num{
-    font-size:64px;
+    font-size:72px;
     font-weight:700;
     letter-spacing:-3px;
     line-height:1;
     color:var(--text-primary);
   }
-  .counter-num span{color:var(--text-inverse)}
+  .counter-num .accent{color:var(--text-inverse)}
   .counter-lbl{
     font-size:var(--font-size-sm);
     color:var(--text-tertiary);
     margin-top:var(--space-1);
     text-transform:uppercase;
-    letter-spacing:.5px;
+    letter-spacing:1px;
   }
   .counter-bar{
     display:flex;align-items:center;justify-content:center;gap:var(--space-2);
     margin-top:var(--space-5);
   }
   .counter-bar .track{
-    width:200px;height:3px;
+    width:220px;height:3px;
     background:#e0dcee;
     border-radius:var(--radius-xl);
     overflow:hidden;
@@ -240,18 +303,18 @@
     min-width:36px;
   }
 
-  /* ═══════════════════════════════════════════════════
+  /* ═══════════════════════════════════════════════════════
      GRID
-     ═══════════════════════════════════════════════════ */
+     ═══════════════════════════════════════════════════════ */
   .grid-section{
-    margin-top:var(--space-1);
     animation:fadeUp var(--motion-normal) .5s both;
   }
   .grid-scroll{
     border-radius:var(--radius-sm);
-    background:var(--surface-strong);
+    background:var(--grid-bg);
     padding:var(--space-5) var(--space-6);
-    box-shadow:0 1px 3px rgba(16,15,18,.06);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.8), 0 1px 3px rgba(16,15,18,.06);
+    overflow-x:auto;
   }
   .grid-outer{display:flex;gap:var(--space-1)}
   .grid-labels{
@@ -265,8 +328,8 @@
     color:var(--text-tertiary);
     display:flex;align-items:center;justify-content:flex-end;
     padding-right:var(--space-1);
-    min-width:36px;
-    background:var(--surface-strong);
+    min-width:30px;
+    background:var(--grid-bg);
     font-variant-numeric:tabular-nums;
     flex-shrink:0;
     line-height:1;
@@ -274,22 +337,34 @@
   .lbl.five{
     color:var(--text-inverse);
     font-weight:600;
-    font-size:var(--font-size-xs);
   }
-  .lbl.decade-end{margin-bottom:6px}
+  .lbl.decade-end{margin-bottom:var(--decade-gap)}
 
-  .grid{display:flex;flex-direction:column;gap:var(--cell-gap);flex-shrink:0}
-  .row{display:flex;gap:var(--cell-gap);height:var(--cell-size);flex-shrink:0}
-  .row.decade-end{margin-bottom:6px}
+  .grid{
+    display:flex;
+    flex-direction:column;
+    gap:var(--cell-gap);
+    flex-shrink:0;
+  }
+  .row{
+    display:flex;
+    gap:var(--cell-gap);
+    height:var(--cell-size);
+    flex-shrink:0;
+  }
+  .row.decade-end{margin-bottom:var(--decade-gap)}
 
   .c{
-    width:var(--cell-size);height:var(--cell-size);
+    width:var(--cell-size);
+    height:var(--cell-size);
     border-radius:var(--cell-radius);
     background:var(--cell-future-bg);
     border:1px solid var(--cell-future-border);
-    transition:background var(--motion-instant),border-color var(--motion-instant),opacity .5s,transform .5s cubic-bezier(.34,1.56,.64,1);
+    transition:background var(--motion-instant),border-color var(--motion-instant),
+              opacity .5s,transform .5s cubic-bezier(.34,1.56,.64,1);
     flex-shrink:0;
     position:relative;
+    cursor:default;
   }
   .c.before-birth{
     background:var(--cell-before-bg);
@@ -300,11 +375,14 @@
     border-color:var(--cell-past-border);
     opacity:0;transform:scale(.3);
   }
-  .c.past.show{opacity:1;transform:scale(1)}
+  .c.past.show{
+    opacity:1;
+    transform:scale(1);
+  }
   .c.current{
     background:var(--cell-current-bg);
     border-color:var(--cell-current-border);
-    box-shadow:0 0 6px rgba(141,111,222,.25);
+    box-shadow:0 0 6px rgba(141,111,222,.28);
     animation:pulse 3s ease-in-out infinite;
     z-index:1;
   }
@@ -313,18 +391,40 @@
     border-color:var(--cell-future-border);
   }
 
-  /* grouping 4-minggu (~bulanan) */
+  /* ── 4-week grouping (~monthly) ── */
   .c.week-end{margin-right:7px}
   .c.week-end::after{
     content:'';position:absolute;
-    right:-5px;top:1px;bottom:1px;
+    right:-5px;top:2px;bottom:2px;
     width:1px;
-    background:var(--cell-future-border);
+    background:#d4cee8;
   }
 
-  /* ═══════════════════════════════════════════════════
+  /* ── Tooltip on hover ── */
+  .c[data-tip]:hover::before{
+    content:attr(data-tip);
+    position:absolute;
+    bottom:calc(100% + 4px);
+    left:50%;transform:translateX(-50%);
+    background:var(--surface-base);
+    color:var(--surface-strong);
+    font-size:var(--font-size-xs);
+    font-family:var(--font-family);
+    padding:var(--space-1) var(--space-3);
+    border-radius:var(--radius-xs);
+    white-space:nowrap;
+    pointer-events:none;
+    z-index:10;
+    opacity:0;
+    animation:tooltipIn var(--motion-fast) forwards;
+  }
+  @keyframes tooltipIn{
+    to{opacity:.9}
+  }
+
+  /* ═══════════════════════════════════════════════════════
      LEGEND
-     ═══════════════════════════════════════════════════ */
+     ═══════════════════════════════════════════════════════ */
   .legend{
     display:flex;justify-content:center;gap:var(--space-7);
     margin-top:var(--space-6);
@@ -338,51 +438,61 @@
     width:11px;height:11px;
     border-radius:var(--cell-radius);
     border:1px solid var(--cell-future-border);
+    flex-shrink:0;
   }
   .dot.past{background:var(--cell-past);border-color:var(--cell-past-border)}
-  .dot.now{background:var(--cell-current-bg);border-color:var(--cell-current-border);animation:pulse 3s infinite}
+  .dot.now{
+    background:var(--cell-current-bg);
+    border-color:var(--cell-current-border);
+    animation:pulse 3s infinite;
+  }
   .dot.future{background:transparent;border-color:var(--cell-future-border)}
 
-  /* ═══════════════════════════════════════════════════
+  /* ═══════════════════════════════════════════════════════
      FOOTER
-     ═══════════════════════════════════════════════════ */
-  footer{
+     ═══════════════════════════════════════════════════════ */
+  .footer{
     text-align:center;
-    margin-top:var(--space-7);
+    padding-top:var(--space-7);
     animation:fadeUp var(--motion-normal) .7s both;
   }
-  footer p{
+  .footer-quote{
     font-size:var(--font-size-sm);
     color:var(--text-tertiary);
     max-width:440px;
-    margin:0 auto var(--space-5);
-    line-height:1.6;
+    margin:0 auto var(--space-6);
+    line-height:1.65;
+    font-style:italic;
   }
   .settings-btn{
     background:none;
     border:1px solid #e0dcee;
     color:var(--text-tertiary);
-    padding:var(--space-1) var(--space-6);
+    padding:var(--space-1) var(--space-7);
     border-radius:var(--radius-xl);
     font-size:var(--font-size-xs);
     cursor:pointer;
     font-family:var(--font-family);
     transition:all var(--motion-instant);
+    -webkit-appearance:none;
   }
   .settings-btn:hover{
     border-color:var(--text-inverse);
     color:var(--text-inverse);
   }
+  .settings-btn:focus-visible{
+    box-shadow:var(--focus-ring);
+  }
   .config-info{
     font-size:var(--font-size-xs);
     color:var(--text-tertiary);
-    opacity:.4;
-    margin-top:var(--space-1);
+    opacity:.35;
+    margin-top:var(--space-2);
   }
 
-  /* ═══════════════════════════════════════════════════
+  /* ═══════════════════════════════════════════════════════
      ANIMATIONS
-     ═══════════════════════════════════════════════════ */
+     ═══════════════════════════════════════════════════════ */
   @keyframes fadeUp{
     from{opacity:0;transform:translateY(var(--space-6))}
     to{opacity:1;transform:translateY(0)}
@@ -392,81 +502,108 @@
     50%{box-shadow:0 0 10px rgba(141,111,222,.4),0 0 20px rgba(141,111,222,.1)}
   }
 
-  /* ═══════════════════════════════════════════════════
+  /* ═══════════════════════════════════════════════════════
      RESPONSIVE
-     ═══════════════════════════════════════════════════ */
+     ═══════════════════════════════════════════════════════ */
   @media(max-width:700px){
-    :root{--cell-size:7px;--cell-gap:1.5px}
-    header h1{font-size:var(--font-size-3xl)}
-    .counter-num{font-size:44px}
-    .modal{padding:var(--space-6) var(--space-6)}
-    .lbl{font-size:7px;min-width:26px;padding-right:var(--space-1)}
-    .lbl.five{font-size:8px}
+    :root{
+      --cell-size:7px;
+      --cell-gap:1.5px;
+      --decade-gap:6px;
+    }
+    .hero{padding:var(--space-7) var(--space-6) var(--space-6)}
+    .hero h1{font-size:var(--font-size-3xl)}
+    .counter-num{font-size:48px}
+    .container{padding:var(--space-6) var(--space-6)}
+    .modal{padding:var(--space-7) var(--space-6)}
+    .lbl{font-size:7px;min-width:22px}
   }
   @media(max-width:480px){
-    :root{--cell-size:5px;--cell-gap:1px}
-    .counter-num{font-size:34px}
+    :root{
+      --cell-size:5px;
+      --cell-gap:1px;
+      --decade-gap:5px;
+    }
+    .hero{padding:var(--space-6) var(--space-4) var(--space-5)}
+    .hero h1{font-size:var(--font-size-2xl)}
+    .counter-num{font-size:36px}
     .grid-scroll{padding:var(--space-3) var(--space-4)}
-    .container{padding:var(--space-6) var(--space-3) var(--space-7)}
-    .lbl{font-size:6px;min-width:18px;padding-right:6px}
+    .container{padding:var(--space-5) var(--space-3) var(--space-6)}
+    .lbl{font-size:6px;min-width:16px;padding-right:4px}
     .lbl.five{font-size:7px}
     .c.week-end{margin-right:5px}
-    .row.decade-end{margin-bottom:4px}
-    .lbl.decade-end{margin-bottom:4px}
+    .row.decade-end{margin-bottom:var(--decade-gap)}
+    .lbl.decade-end{margin-bottom:var(--decade-gap)}
+    .modal{padding:var(--space-6) var(--space-5);max-width:340px}
+    .counter-bar .track{width:140px}
   }
 </style>
 </head>
 <body>
 
+<!-- ── MODAL ── -->
 <div class="modal-overlay" id="modal">
   <div class="modal">
+    <span class="modal-icon">🕯️</span>
     <h1><span>Life</span> in Weeks</h1>
-    <p class="sub">Kapan perjalananmu dimulai, dan sampai kapan kamu ingin melangkah?</p>
+    <p class="sub">Kapan perjalananmu dimulai,<br>dan sampai kapan kamu ingin melangkah?</p>
     <label>Tanggal Lahir</label>
     <input type="date" id="birthInput">
-    <label>Target Usia</label>
-    <input type="number" id="ageInput" value="75" min="1" max="120">
+    <label>Target Usia (tahun)</label>
+    <input type="number" id="ageInput" value="75" min="1" max="120" placeholder="75">
     <button id="startBtn">Mulai</button>
-    <p class="sub" id="modalHint" style="margin-top:var(--space-1);font-size:var(--font-size-xs);color:var(--text-tertiary);opacity:.6"></p>
+    <p class="sub-hint" id="modalHint">Isi data kamu untuk memulai.</p>
   </div>
 </div>
 
-<div class="container">
-  <header>
-    <div class="icon">🕯️</div>
-    <h1>Memento <span>Mori</span></h1>
-    <p class="info" id="ageInfo">—</p>
-  </header>
+<!-- ── PAGE ── -->
+<div class="page">
 
-  <div class="counter">
-    <div class="counter-num" id="counterNum">0</div>
-    <div class="counter-lbl">minggu tersisa</div>
-    <div class="counter-bar">
-      <span class="pct" id="pctL">0%</span>
-      <div class="track"><div class="fill" id="barFill"></div></div>
-      <span class="pct" id="pctR">100%</span>
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-inner">
+      <div class="icon">🕯️</div>
+      <h1>Memento <span>Mori</span></h1>
+      <p class="info" id="ageInfo">—</p>
     </div>
   </div>
 
-  <div class="grid-section">
-    <div class="grid-scroll">
-      <div class="grid-outer">
-        <div class="grid-labels" id="gridLabels"></div>
-        <div class="grid" id="grid"></div>
+  <div class="container">
+
+    <!-- Counter -->
+    <div class="counter">
+      <div class="counter-num"><span class="accent" id="counterNum">0</span></div>
+      <div class="counter-lbl">minggu tersisa</div>
+      <div class="counter-bar">
+        <span class="pct" id="pctL">0%</span>
+        <div class="track"><div class="fill" id="barFill"></div></div>
+        <span class="pct" id="pctR">100%</span>
       </div>
     </div>
-    <div class="legend">
-      <div class="legend-item"><span class="dot past"></span>Terlewati</div>
-      <div class="legend-item"><span class="dot now"></span>Sekarang</div>
-      <div class="legend-item"><span class="dot future"></span>Tersisa</div>
-    </div>
-  </div>
 
-  <footer>
-    <p>"Hidup bukan tentang berapa banyak minggu yang kau miliki, tapi apa yang kau lakukan dengan minggu yang tersisa."</p>
-    <button class="settings-btn" id="settingsBtn">⚙️ Pengaturan</button>
-    <p class="config-info" id="configInfo"></p>
-  </footer>
+    <!-- Grid -->
+    <div class="grid-section">
+      <div class="grid-scroll">
+        <div class="grid-outer">
+          <div class="grid-labels" id="gridLabels"></div>
+          <div class="grid" id="grid"></div>
+        </div>
+      </div>
+      <div class="legend">
+        <div class="legend-item"><span class="dot past"></span>Terlewati</div>
+        <div class="legend-item"><span class="dot now"></span>Sekarang</div>
+        <div class="legend-item"><span class="dot future"></span>Tersisa</div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <p class="footer-quote">"Hidup bukan tentang berapa banyak minggu yang kau miliki, tapi apa yang kau lakukan dengan minggu yang tersisa."</p>
+      <button class="settings-btn" id="settingsBtn">⚙️ Pengaturan</button>
+      <p class="config-info" id="configInfo"></p>
+    </div>
+
+  </div>
 </div>
 
 <script>
@@ -532,16 +669,16 @@ function build(){
   const years=TA;
   const pastCells=[];
 
-  // Labels
+  // ── Labels ──
   for(let r=0;r<years;r++){
     const lbl=document.createElement('div');
-    if(r%5===0&&r>0){lbl.className='lbl five';lbl.textContent=r}
-    else{lbl.className='lbl'}
+    lbl.className=r%5===0&&r>0?'lbl five':'lbl';
+    if(r%5===0&&r>0) lbl.textContent=r;
     if(r%10===9&&r<years-1) lbl.classList.add('decade-end');
     labels.appendChild(lbl);
   }
 
-  // Grid rows
+  // ── Grid rows ──
   for(let r=0;r<years;r++){
     const row=document.createElement('div');
     row.className='row';
@@ -552,21 +689,32 @@ function build(){
       const el=document.createElement('div');
       el.className='c '+st;
       if(c%4===3&&c<51) el.classList.add('week-end');
+
+      // tooltip data — first/last week of year
+      const{s,e}=weekDates(r,c);
+      if(st==='past'||st==='current'){
+        el.setAttribute('data-tip',fmt(s)+' — '+fmt(e));
+      }
+
       row.appendChild(el);
       if(st==='past') pastCells.push(el);
     }
     grid.appendChild(row);
   }
 
-  // Counter & bar
+  // ── Counter & bar ──
   animCount(remain);
   const pct=totalW>0?(livedW/totalW)*100:0;
-  setTimeout(()=>{bar.style.width=Math.min(pct,100)+'%';pL.textContent=Math.round(pct)+'%';pR.textContent=Math.round(100-pct)+'%'},200);
+  setTimeout(()=>{
+    bar.style.width=Math.min(pct,100)+'%';
+    pL.textContent=Math.round(pct)+'%';
+    pR.textContent=Math.round(100-pct)+'%';
+  },200);
 
   const yrs=Math.floor(daysLived/365.25);
   info.textContent='Usia '+yrs+' tahun · Target '+TA+' tahun · Lahir '+fmt(BD);
 
-  // Cascade animation
+  // Cascade past-cell animation
   animPast(pastCells);
 }
 
@@ -574,10 +722,12 @@ function build(){
 function showModal(editing){
   editMode=!!editing;
   const s=JSON.parse(localStorage.getItem('lw')||'null');
-  if(s){bInput.value=s.birth;aInput.value=s.age}
+  if(s){bInput.value=s.birth; aInput.value=s.age}
   else if(!editing){const def=new Date();def.setFullYear(def.getFullYear()-30);bInput.value=def.toISOString().split('T')[0]}
   startBtn.textContent=editMode?'Simpan':'Mulai';
-  document.getElementById('modalHint').textContent=editMode?'Edit data yang sudah tersimpan — klik Simpan untuk memperbarui.':'Isi data kamu untuk memulai.';
+  document.getElementById('modalHint').textContent=editMode
+    ?'Data yang sudah tersimpan akan diperbarui.'
+    :'Isi data kamu untuk memulai.';
   modal.classList.add('show');
 }
 
