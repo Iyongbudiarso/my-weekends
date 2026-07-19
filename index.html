@@ -410,27 +410,7 @@
     background:var(--color-border-input);
   }
 
-  /* ── Tooltip on hover ── */
-  .c[data-tip]:hover::before{
-    content:attr(data-tip);
-    position:absolute;
-    bottom:calc(100% + 4px);
-    left:50%;transform:translateX(-50%);
-    background:var(--surface-base);
-    color:var(--surface-strong);
-    font-size:var(--font-size-xs);
-    font-family:var(--font-family);
-    padding:var(--space-1) var(--space-3);
-    border-radius:var(--radius-xs);
-    white-space:nowrap;
-    pointer-events:none;
-    z-index:10;
-    opacity:0;
-    animation:tooltipIn var(--motion-fast) forwards;
-  }
-  @keyframes tooltipIn{
-    to{opacity:.9}
-  }
+
 
   /* ═══════════════════════════════════════════════════════
      LEGEND
@@ -700,11 +680,6 @@ function build(){
       el.className='c '+st;
       if(c%4===3&&c<51) el.classList.add('week-end');
 
-      // tooltip data — first/last week of year
-      const{s,e}=weekDates(r,c);
-      if(st==='past'||st==='current'){
-        el.setAttribute('data-tip',fmt(s)+' — '+fmt(e));
-      }
 
       row.appendChild(el);
       if(st==='past') pastCells.push(el);
